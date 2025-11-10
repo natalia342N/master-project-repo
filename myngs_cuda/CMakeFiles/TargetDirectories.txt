@@ -1,0 +1,8 @@
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/ngscudalib_local.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/ngscuda.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/edit_cache.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/rebuild_cache.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/list_install_components.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/install.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/install/local.dir
+/home/fs72329/ntylek/myngs_cuda/CMakeFiles/install/strip.dir

@@ -1,0 +1,7 @@
+
+if [ -f /usr/local/cuda/bin/nvcc ]
+  then NVCC=/usr/local/cuda/bin/nvcc
+  else NVCC=nvcc
+fi
+
+$NVCC  -arch=native  -Xcompiler -fPIC  $*
