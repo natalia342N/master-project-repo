@@ -1,0 +1,68 @@
+Running on GPU NVIDIA A40
+Test will increase thread counts from 1 to 21504
+
+Launching >>DAXPY Cooperative Small Test<<
+Measuring average time over 1 iterations for each setup (ms):
+>> 0/31, #threads=1: Processed tasks: 10, Throughput: 1212.52 tasks/sec
+8.2473
+>> 1/31, #threads=2: Processed tasks: 10, Throughput: 1241.66 tasks/sec
+8.05376
+>> 2/31, #threads=4: Processed tasks: 10, Throughput: 1255.87 tasks/sec
+7.96262
+>> 3/31, #threads=8: Processed tasks: 10, Throughput: 1476.28 tasks/sec
+6.77376
+>> 4/31, #threads=16: Processed tasks: 10, Throughput: 1481.89 tasks/sec
+6.74816
+>> 5/31, #threads=32: Processed tasks: 10, Throughput: 1481.21 tasks/sec
+6.75123
+>> 6/31, #threads=64: Processed tasks: 20, Throughput: 2968.73 tasks/sec
+6.7369
+>> 7/31, #threads=128: Processed tasks: 40, Throughput: 5941.06 tasks/sec
+6.7328
+>> 8/31, #threads=256: Processed tasks: 80, Throughput: 10244.6 tasks/sec
+7.80902
+>> 9/31, #threads=512: Processed tasks: 160, Throughput: 22257.8 tasks/sec
+7.18848
+>> 10/31, #threads=1024: Processed tasks: 320, Throughput: 40929.9 tasks/sec
+7.81824
+>> 11/31, #threads=2048: Processed tasks: 640, Throughput: 69475.3 tasks/sec
+9.2119
+>> 12/31, #threads=3072: Processed tasks: 960, Throughput: 115144 tasks/sec
+8.33741
+>> 13/31, #threads=4096: Processed tasks: 1280, Throughput: 133790 tasks/sec
+9.56723
+>> 14/31, #threads=5120: Processed tasks: 1600, Throughput: 182620 tasks/sec
+8.76134
+>> 15/31, #threads=6144: Processed tasks: 1920, Throughput: 211864 tasks/sec
+9.0624
+>> 16/31, #threads=7168: Processed tasks: 2240, Throughput: 240015 tasks/sec
+9.33274
+>> 17/31, #threads=8192: Processed tasks: 2560, Throughput: 264662 tasks/sec
+9.6727
+>> 18/31, #threads=9216: Processed tasks: 2880, Throughput: 288521 tasks/sec
+9.98195
+>> 19/31, #threads=10240: Processed tasks: 3200, Throughput: 281608 tasks/sec
+11.3633
+>> 20/31, #threads=11264: Processed tasks: 3520, Throughput: 328288 tasks/sec
+10.7223
+>> 21/31, #threads=12288: Processed tasks: 3840, Throughput: 342936 tasks/sec
+11.1974
+>> 22/31, #threads=13312: Processed tasks: 4160, Throughput: 357614 tasks/sec
+11.6326
+>> 23/31, #threads=14336: Processed tasks: 4480, Throughput: 341450 tasks/sec
+13.1205
+>> 24/31, #threads=15360: Processed tasks: 4800, Throughput: 384158 tasks/sec
+12.4948
+>> 25/31, #threads=16384: Processed tasks: 5120, Throughput: 400160 tasks/sec
+12.7949
+>> 26/31, #threads=17408: Processed tasks: 5440, Throughput: 421293 tasks/sec
+12.9126
+>> 27/31, #threads=18432: Processed tasks: 5760, Throughput: 428473 tasks/sec
+13.4431
+>> 28/31, #threads=19456: Processed tasks: 6080, Throughput: 440435 tasks/sec
+13.8045
+>> 29/31, #threads=20480: Processed tasks: 6400, Throughput: 450223 tasks/sec
+14.2152
+>> 30/31, #threads=21504: Processed tasks: 6720, Throughput: 452430 tasks/sec
+14.8531
+Test completed.

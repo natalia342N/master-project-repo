@@ -1,0 +1,5 @@
+Running on GPU NVIDIA A40
+Test will increase thread counts from 1 to 21504
+
+Launching >>DAXPY Cooperative Small Test<<
+Measuring average time over 1 iterations for each setup (ms):
