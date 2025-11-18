@@ -1,122 +1,79 @@
 // include/queues/taskmanager_gpu.cu
-#include "taskmanager_gpu.cuh"
-#include "job_kernels.cuh"   // brings in Task::execute + job funcs
+#include <cstdio>
+#include <cstdlib>
+#include <cuda_runtime.h>
+#include "queues/taskmanager_gpu.cuh"
 
 namespace ASC_HPC {
 
-  // ---- Device globals ----
-  __device__ GPUQueue d_queue;
-  __device__ int      d_doneCounter = 0;
-  __device__ int      d_stopFlag    = 0;
-
-  // ============================================================
-  //  Worker kernel: dequeue Task -> Task::execute()
-  // ============================================================
-
-  __global__ void worker_kernel() {
-    // init queue + counters once
-    if (blockIdx.x == 0 && threadIdx.x == 0) {
-      d_queue.init();       // your BrokerQueue::init()
-      d_doneCounter = 0;
-      d_stopFlag    = 0;
-      current_phase = 0;    // start with job 0
+  // --- small helper for error checking ---
+  inline void checkCuda(cudaError_t err, const char* what) {
+    if (err != cudaSuccess) {
+      printf("CUDA ERROR in %s: %s (%d)\n",
+             what, cudaGetErrorString(err), (int)err);
+      fflush(stdout);
+      // hard abort so we see it clearly
+      std::abort();
     }
-    __syncthreads();
+  }
 
-    Task t;
+  // Single global device counter
+  __device__ int d_doneCounter = 0;
 
-    while (true) {
-      if (atomicAdd(&d_stopFlag, 0) != 0)
-        break;
-
-      bool got = false;
-
-      // one thread per block dequeues a Task from BrokerQueue
-      if (threadIdx.x == 0) {
-        got = d_queue.dequeue(t);   // your BrokerQueue::dequeue(Task&)
-      }
-
-      got = __syncthreads_or(got);
-      if (!got) {
-        // no tasks at the moment
-        continue;
-      }
-
-      __syncthreads();  // make sure all threads see 't'
-
-      // cooperative execution: each thread calls t.execute(),
-      // but the internal job->func() will typically use threadIdx/grid-stride
-      t.execute();
-
-      __syncthreads();
-      if (threadIdx.x == 0) {
+  // Very simple test kernel: runs on GPU, bumps the counter 16 times
+  __global__ void test_kernel(int n) {
+    if (blockIdx.x == 0 && threadIdx.x == 0) {
+      for (int i = 0; i < n; ++i) {
+        printf("test_kernel: i=%d\n", i);
         atomicAdd(&d_doneCounter, 1);
       }
     }
   }
 
-  // ============================================================
-  //  Helper kernel: enqueue Task objects on device
-  // ============================================================
+  // ------- Host API: no queues, no jobs, just this counter test -------
 
-  __global__ void enqueue_tasks_kernel(Job* job, int n) {
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= n) return;
+  void StartWorkersGPU(int /*blocks*/, int /*threadsPerBlock*/) {
+    // reset counter on device
+    int zero = 0;
+    checkCuda(cudaMemcpyToSymbol(d_doneCounter, &zero, sizeof(int)),
+              "cudaMemcpyToSymbol(d_doneCounter)");
 
-    Task t;
-    t.job = job;
-    t.i   = idx;
-    d_queue.enqueue(t);   // your BrokerQueue::enqueue(Task&)
-  }
+    // launch test kernel once
+    test_kernel<<<1, 1>>>(16);
 
-  // ============================================================
-  //  Host-side symbol access
-  // ============================================================
+    // check launch error immediately
+    checkCuda(cudaGetLastError(), "kernel launch (test_kernel)");
 
-  static int* h_doneCounter_ptr = nullptr;
-  static int* h_stopFlag_ptr    = nullptr;
-
-  static void init_symbol_pointers() {
-    static bool inited = false;
-    if (inited) return;
-
-    cudaGetSymbolAddress((void**)&h_doneCounter_ptr, d_doneCounter);
-    cudaGetSymbolAddress((void**)&h_stopFlag_ptr,    d_stopFlag);
-    inited = true;
-  }
-
-  // ============================================================
-  //  Host API implementation
-  // ============================================================
-
-  void StartWorkersGPU(int blocks, int threadsPerBlock) {
-    init_symbol_pointers();
-    worker_kernel<<<blocks, threadsPerBlock>>>();
-    // no sync: persistent kernel stays alive
-  }
-
-  void StopWorkersGPU() {
-    init_symbol_pointers();
-    int one = 1;
-    cudaMemcpy(h_stopFlag_ptr, &one, sizeof(int), cudaMemcpyHostToDevice);
-    cudaDeviceSynchronize();  // wait for worker_kernel to finish
-  }
-
-  void EnqueueJobTasksGPU(Job* d_job, int n) {
-    int blockSize = 128;
-    int gridSize  = (n + blockSize - 1) / blockSize;
-    enqueue_tasks_kernel<<<gridSize, blockSize>>>(d_job, n);
-    cudaDeviceSynchronize();  // ensure they've been enqueued
+    // (don't sync here; WaitForAllGPU will hit it via memcpy)
   }
 
   void WaitForAllGPU(int expectedDone) {
-    init_symbol_pointers();
-    int done = 0;
-    while (done < expectedDone) {
-      cudaMemcpy(&done, h_doneCounter_ptr, sizeof(int),
-                 cudaMemcpyDeviceToHost);
-      // optional: sleep/yield here
+    int done  = 0;
+    int iter  = 0;
+    int const maxIters = 200000;
+
+    while (done < expectedDone && iter < maxIters) {
+      checkCuda(cudaMemcpyFromSymbol(&done, d_doneCounter, sizeof(int)),
+                "cudaMemcpyFromSymbol(d_doneCounter)");
+
+      if (iter % 1000 == 0) {
+        printf("WaitForAllGPU: iter=%d done=%d / %d\n",
+               iter, done, expectedDone);
+        fflush(stdout);
+      }
+      ++iter;
     }
+
+    if (done < expectedDone) {
+      printf("WaitForAllGPU: TIMEOUT, done=%d / %d\n", done, expectedDone);
+    } else {
+      printf("WaitForAllGPU: completed, done=%d\n", done);
+    }
+  }
+
+  void StopWorkersGPU() {
+    // just make sure any kernel is finished
+    checkCuda(cudaDeviceSynchronize(), "cudaDeviceSynchronize()");
   }
 
 } // namespace ASC_HPC

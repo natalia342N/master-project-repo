@@ -1,0 +1,29 @@
+build/
+CMakeFiles/
+cmake-build-*/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Objects / libs / execs
+*.o
+*.a
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+*.out
+*.log
+
+# NVCC / intermediates
+*.d
+ngs_nvcc
+ngs_nvlink
+
+# Python & Jupyter
+__pycache__/
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/

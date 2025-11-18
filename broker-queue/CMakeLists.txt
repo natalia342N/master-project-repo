@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 
+set(CMAKE_CUDA_ARCHITECTURES "86-real")
+
+
 project(queuetest LANGUAGES CXX CUDA)
 
 include_directories(include ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 
-set(CUDA_BUILD_TARGET_ARCHITECTURES "75" CACHE STRING "Semicolon-separated list of target architectures to build for")
+set(CMAKE_CUDA_ARCHITECTURES "86-real")
+
 option(CUDA_BUILD_INFO "build with kernel statistics and line numbers" FALSE)
 option(CUDA_BUILD_DEBUG "build with kernel debug" FALSE)
 
@@ -25,8 +29,8 @@ add_executable(queuetest
 )
 
 set_target_properties(queuetest PROPERTIES
+    CUDA_ARCHITECTURES "86-real"
     CXX_STANDARD 14
-    CUDA_ARCHITECTURES "${CUDA_BUILD_TARGET_ARCHITECTURES}"
     CUDA_STANDARD 14
 )
 
@@ -61,8 +65,8 @@ add_executable(taskmanager_test
 )
 
 set_target_properties(taskmanager_test PROPERTIES
+    CUDA_ARCHITECTURES "86-real"
     CXX_STANDARD 14
-    CUDA_ARCHITECTURES "${CUDA_BUILD_TARGET_ARCHITECTURES}"
     CUDA_STANDARD 14
 )
 

@@ -1,0 +1,1 @@
+/usr/bin/g++ CMakeFiles/taskmanager_test.dir/include/queues/taskmanager_gpu.cu.o CMakeFiles/taskmanager_test.dir/source/main_taskmanager.cu.o -o taskmanager_test  -lcuda -lcudadevrt -lcudart_static -lrt -lpthread -ldl  -L"/usr/local/cuda-12/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda-12/targets/x86_64-linux/lib"
