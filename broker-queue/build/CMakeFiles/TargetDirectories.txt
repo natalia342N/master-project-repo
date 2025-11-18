@@ -1,3 +1,0 @@
-/home/fs72329/ntylek/thesis/broker-queue/build/CMakeFiles/queuetest.dir
-/home/fs72329/ntylek/thesis/broker-queue/build/CMakeFiles/edit_cache.dir
-/home/fs72329/ntylek/thesis/broker-queue/build/CMakeFiles/rebuild_cache.dir

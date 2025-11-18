@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/queuetest.dir/source/main.cpp.o CMakeFiles/queuetest.dir/source/queuetest.cu.o -o queuetest   -L/usr/local/cuda-11.8/targets/x86_64-linux/lib/stubs  -L/usr/local/cuda-11.8/targets/x86_64-linux/lib  -lcuda -lcudadevrt -lcudart_static -lrt -lpthread -ldl 
